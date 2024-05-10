@@ -94,17 +94,19 @@ class _BhajanLyricsPageState extends State<BhajanLyricsPage> {
                     _fontSize = 16.0 * details.scale.clamp(0.5, 5.0);
                   });
                 },
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: widget.lyrics.length,
-                  itemBuilder: (context, index) {
-                    return Text(
-                      widget.lyrics[index],
-                      style: TextStyle(fontSize: _fontSize),
-                      textAlign: TextAlign.center,
-                    );
-                  },
+                child: SingleChildScrollView(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.lyrics.length,
+                    itemBuilder: (context, index) {
+                      return Text(
+                        widget.lyrics[index],
+                        style: TextStyle(fontSize: _fontSize),
+                        textAlign: TextAlign.center,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

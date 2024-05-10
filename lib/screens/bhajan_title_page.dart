@@ -53,7 +53,7 @@ class BhajanListItem extends StatelessWidget {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: Image.asset(
-          'lib/assets/images/cover.png', // Placeholder image
+          'lib/assets/images/cover.png',
           width: 100,
           height: 100,
           fit: BoxFit.cover,
