@@ -1,221 +1,203 @@
-import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_state.dart';
+// bhajan_list_page.dart
+import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_bloc.dart';
+import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 
-import '../bloc/bhajanList/bhjan_list_bloc.dart';
 import 'bhajan_title_page.dart';
 
 class BhajanListPage extends StatelessWidget {
   BhajanListPage({Key? key});
 
-  final BhajanListBloc _bhajanListBloc = BhajanListBloc();
-  final String Aarti = dotenv.env['Aarti_API']!;
-  final String Chalisa = dotenv.env['Chalisa']!;
-  final String Ram = dotenv.env['Ram']!;
-  final String Ma = dotenv.env['Ma']!;
-  final String Ganesh = dotenv.env['Ganesh']!;
-  final String khatuShyam = dotenv.env['khatuShyam']!;
-  final String Laxmi = dotenv.env['Laxmi']!;
-  final String Hanumanji = dotenv.env['Hanumanji']!;
+  final List<String> apiEndpoints = [
+    dotenv.env['Aarti_API']!,
+    dotenv.env['Chalisa']!,
+    dotenv.env['Ram']!,
+    dotenv.env['Ma']!,
+    dotenv.env['Ganesh']!,
+    dotenv.env['khatuShyam']!,
+    dotenv.env['Laxmi']!,
+    dotenv.env['Hanumanji']!,
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _bhajanListBloc,
-      child: BlocConsumer<BhajanListBloc, BhajanListState>(
-        listener: (context, state) {
-          if (state is BhajanListLoaded) {
-            navigateToBhajanTitlePage(context, state.data);
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: const Color(0xFFEFF3F6), // Light Blue Grey
-            appBar: AppBar(
-              title: const Text(
-                'BhajanAarti',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
+    return Scaffold(
+      backgroundColor: const Color(0xFFEFF3F6), // Light Blue Grey
+      appBar: AppBar(
+        title: const Text(
+          'BhajanAarti',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      drawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: Container(
+          color: const Color(0xFFEFF3F6), // Light Blue Grey
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.amber,
                 ),
-              ),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-            ),
-            drawer: Drawer(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: Container(
-                color: const Color(0xFFEFF3F6), // Light Blue Grey
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    const DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Menu',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Welcome!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Menu',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.favorite, color: Colors.blue),
-                      title: const Text('Favorite'),
-                      onTap: () {
-                        // Navigate to Favorite page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.info, color: Colors.blue),
-                      title: const Text('About'),
-                      onTap: () {
-                        // Navigate to About page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.help, color: Colors.blue),
-                      title: const Text('FAQ'),
-                      onTap: () {
-                        // Navigate to FAQ page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.share, color: Colors.blue),
-                      title: const Text('Share'),
-                      onTap: () {
-                        // Perform Share action
-                      },
+                    SizedBox(height: 20),
+                    Text(
+                      'Welcome!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(children: [
-                    RoomCard(
-                      title: "Aarti",
-                      subtitle: "आरती",
-                      imagePath: "lib/assets/images/god_images/arti_image.jpg",
-                      onTap: () => _bhajanListBloc.add(FetchBhajans(Aarti)),
-                    ),
-                    RoomCard(
-                      title: "Chalisa",
-                      subtitle: "चालीसा",
-                      imagePath:
-                          "lib/assets/images/god_images/chalisa_image.jpg",
-                      onTap: () => _bhajanListBloc.add(FetchBhajans(Chalisa)),
-                    ),
-                  ]),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Sree Ram Bhajan",
-                        subtitle: "श्री राम भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/sreeram_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ram)),
-                      ),
-                      RoomCard(
-                        title: "Devimaa Bhajan",
-                        subtitle: "देवीमाँ भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/mata_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ma)),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Ganesh Bhajan",
-                        subtitle: "गणेश भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/ganesh_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ganesh)),
-                      ),
-                      RoomCard(
-                        title: "Khatu Shyam Bhajan",
-                        subtitle: "खाटू श्याम भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/krishna_image.jpg",
-                        onTap: () =>
-                            _bhajanListBloc.add(FetchBhajans(khatuShyam)),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Laxmi Bhajan",
-                        subtitle: "लक्ष्मी भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/laxmi_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Laxmi)),
-                      ),
-                      RoomCard(
-                        title: "Hanumanji Bhajan",
-                        subtitle: "हनुमानजी भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/hanumanji_image.jpg",
-                        onTap: () =>
-                            _bhajanListBloc.add(FetchBhajans(Hanumanji)),
-                      ),
-                    ],
-                  ),
-                ],
-                // Add other RoomRows with respective RoomCards here
+              ListTile(
+                leading: const Icon(Icons.favorite, color: Colors.blue),
+                title: const Text('Favorite'),
+                onTap: () {
+                  // Navigate to Favorite page
+                },
               ),
+              ListTile(
+                leading: const Icon(Icons.info, color: Colors.blue),
+                title: const Text('About'),
+                onTap: () {
+                  // Navigate to About page
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.help, color: Colors.blue),
+                title: const Text('FAQ'),
+                onTap: () {
+                  // Navigate to FAQ page
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.share, color: Colors.blue),
+                title: const Text('Share'),
+                onTap: () {
+                  // Perform Share action
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(children: [
+              RoomCard(
+                title: "Aarti",
+                subtitle: "आरती",
+                imagePath: "lib/assets/images/god_images/arti_image.jpg",
+                onTap: () {
+                  navigateToBhajanTitlePage(context, apiEndpoints[0]);
+                },
+              ),
+              RoomCard(
+                title: "Chalisa",
+                subtitle: "चालीसा",
+                imagePath: "lib/assets/images/god_images/chalisa_image.jpg",
+                onTap: () {
+                  navigateToBhajanTitlePage(context, apiEndpoints[1]);
+                },
+              ),
+            ]),
+            Row(
+              children: [
+                RoomCard(
+                  title: "Sree Ram Bhajan",
+                  subtitle: "श्री राम भजन",
+                  imagePath: "lib/assets/images/god_images/sreeram_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[2]);
+                  },
+                ),
+                RoomCard(
+                  title: "Devimaa Bhajan",
+                  subtitle: "देवीमाँ भजन",
+                  imagePath: "lib/assets/images/god_images/mata_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[3]);
+                  },
+                ),
+              ],
             ),
-          );
-        },
+            Row(
+              children: [
+                RoomCard(
+                  title: "Ganesh Bhajan",
+                  subtitle: "गणेश भजन",
+                  imagePath: "lib/assets/images/god_images/ganesh_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[4]);
+                  },
+                ),
+                RoomCard(
+                  title: "Khatu Shyam Bhajan",
+                  subtitle: "खाटू श्याम भजन",
+                  imagePath: "lib/assets/images/god_images/krishna_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[5]);
+                  },
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                RoomCard(
+                  title: "Laxmi Bhajan",
+                  subtitle: "लक्ष्मी भजन",
+                  imagePath: "lib/assets/images/god_images/laxmi_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[6]);
+                  },
+                ),
+                RoomCard(
+                  title: "Hanumanji Bhajan",
+                  subtitle: "हनुमानजी भजन",
+                  imagePath: "lib/assets/images/god_images/hanumanji_image.jpg",
+                  onTap: () {
+                    navigateToBhajanTitlePage(context, apiEndpoints[7]);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void navigateToBhajanTitlePage(BuildContext context, List<dynamic> data) {
+  void navigateToBhajanTitlePage(BuildContext context, String apiEndpoint) {
+    BlocProvider.of<BhajanListBloc>(context).add(FetchBhajans(apiEndpoint));
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BhajanTitlePage(data: data),
+        builder: (context) => BhajanTitlePage(),
       ),
-    );
-  }
-}
-
-class RoomRow extends StatelessWidget {
-  final List<Widget> children;
-
-  const RoomRow({Key? key, required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: children,
     );
   }
 }
