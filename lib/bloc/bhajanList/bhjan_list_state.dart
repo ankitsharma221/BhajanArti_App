@@ -13,17 +13,18 @@ class BhajanListLoading extends BhajanListState {}
 
 class BhajanListLoaded extends BhajanListState {
   final List<dynamic> data;
+  final List<String> favorites; // Add favorites list
 
-  const BhajanListLoaded(this.data);
+  BhajanListLoaded(this.data, {required this.favorites});
 
   @override
-  List<Object?> get props => [data];
+  List<Object?> get props => [data, favorites];
 }
 
 class BhajanListError extends BhajanListState {
   final String errorMessage;
 
-  const BhajanListError(this.errorMessage);
+  BhajanListError(this.errorMessage);
 
   @override
   List<Object?> get props => [errorMessage];

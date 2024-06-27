@@ -1,6 +1,6 @@
-// bhajan_list_page.dart
 import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_bloc.dart';
 import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_events.dart';
+import 'package:bhajan_arti/pages/favorite_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -33,6 +33,23 @@ class BhajanListPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FavoritePage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 28.0,
+                )),
+          )
+        ],
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -74,7 +91,10 @@ class BhajanListPage extends StatelessWidget {
                 leading: const Icon(Icons.favorite, color: Colors.blue),
                 title: const Text('Favorite'),
                 onTap: () {
-                  // Navigate to Favorite page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FavoritePage()),
+                  );
                 },
               ),
               ListTile(
@@ -113,7 +133,8 @@ class BhajanListPage extends StatelessWidget {
                 subtitle: "आरती",
                 imagePath: "lib/assets/images/god_images/arti_image.jpg",
                 onTap: () {
-                  navigateToBhajanTitlePage(context, apiEndpoints[0]);
+                  _navigateToBhajanTitlePage(context, apiEndpoints[0],
+                      title: "आरती");
                 },
               ),
               RoomCard(
@@ -121,7 +142,8 @@ class BhajanListPage extends StatelessWidget {
                 subtitle: "चालीसा",
                 imagePath: "lib/assets/images/god_images/chalisa_image.jpg",
                 onTap: () {
-                  navigateToBhajanTitlePage(context, apiEndpoints[1]);
+                  _navigateToBhajanTitlePage(context, apiEndpoints[1],
+                      title: "चालीसा");
                 },
               ),
             ]),
@@ -132,7 +154,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "श्री राम भजन",
                   imagePath: "lib/assets/images/god_images/sreeram_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[2]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[2],
+                        title: "श्री राम भजन");
                   },
                 ),
                 RoomCard(
@@ -140,7 +163,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "देवीमाँ भजन",
                   imagePath: "lib/assets/images/god_images/mata_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[3]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[3],
+                        title: "देवीमाँ भजन");
                   },
                 ),
               ],
@@ -152,7 +176,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "गणेश भजन",
                   imagePath: "lib/assets/images/god_images/ganesh_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[4]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[4],
+                        title: "गणेश भजन");
                   },
                 ),
                 RoomCard(
@@ -160,7 +185,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "खाटू श्याम भजन",
                   imagePath: "lib/assets/images/god_images/krishna_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[5]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[5],
+                        title: "खाटू श्याम भजन");
                   },
                 ),
               ],
@@ -172,7 +198,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "लक्ष्मी भजन",
                   imagePath: "lib/assets/images/god_images/laxmi_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[6]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[6],
+                        title: "लक्ष्मी भजन");
                   },
                 ),
                 RoomCard(
@@ -180,7 +207,8 @@ class BhajanListPage extends StatelessWidget {
                   subtitle: "हनुमानजी भजन",
                   imagePath: "lib/assets/images/god_images/hanumanji_image.jpg",
                   onTap: () {
-                    navigateToBhajanTitlePage(context, apiEndpoints[7]);
+                    _navigateToBhajanTitlePage(context, apiEndpoints[7],
+                        title: "हनुमानजी भजन");
                   },
                 ),
               ],
@@ -191,12 +219,13 @@ class BhajanListPage extends StatelessWidget {
     );
   }
 
-  void navigateToBhajanTitlePage(BuildContext context, String apiEndpoint) {
-    BlocProvider.of<BhajanListBloc>(context).add(FetchBhajans(apiEndpoint));
+  void _navigateToBhajanTitlePage(BuildContext context, String apiEndpoint,
+      {required String title}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BhajanTitlePage(),
+        builder: (context) =>
+            BhajanTitlePage(title: title, apiUrl: apiEndpoint),
       ),
     );
   }

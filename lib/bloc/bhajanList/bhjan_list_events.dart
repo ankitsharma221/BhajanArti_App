@@ -15,3 +15,12 @@ class FetchBhajans extends BhajanListEvent {
   @override
   List<Object?> get props => [apiUrl];
 }
+
+class ToggleFavorite extends BhajanListEvent {
+  final String title;
+
+  const ToggleFavorite(this.title);
+
+  @override
+  List<Object?> get props => [title];
+}
