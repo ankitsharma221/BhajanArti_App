@@ -1,4 +1,4 @@
-# My App
+# BhajanArti App
 
 ## Screenshots
 ## Play Store Link :
