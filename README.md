@@ -1,9 +1,15 @@
+# My App
 
+## Screenshots
 
-![Screenshot_20240802_083009](https://github.com/user-attachments/assets/02f9b7a1-7329-4798-b842-a3f93692e95b)
-![Screenshot_20240802_083058](https://github.com/user-attachments/assets/12b5aab5-38c1-4e9a-828b-5256b1de1082)
-![Screenshot_20240802_083023](https://github.com/user-attachments/assets/455c9711-b51d-4a0d-abbc-ffc6455f76c8)
-![WhatsApp Image 2024-05-13 at 12 14 39 AM](https://github.com/user-attachments/assets/e7b77845-ffd6-4946-a7a4-82591b4ac960)
-![WhatsApp Image 2024-05-13 at 12 14 36 AM (1)](https://github.com/user-attachments/assets/e1f548d1-cba8-4c0e-b067-17037b095d57)
-![WhatsApp Image 2024-05-13 at 12 14 37 AM (1)](https://github.com/user-attachments/assets/a8f719eb-b695-4fde-8f73-d0ee64e215f7)
-![WhatsApp Image 2024-05-13 at 12 14 38 AM (1)](https://github.com/user-attachments/assets/51956b4a-bb95-4640-99a8-8b86c5154be6)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3751b07b-3b73-41a3-97e3-87b1bc28b065" alt="Screenshot 1" width="150"/>
+  <img src="https://github.com/user-attachments/assets/c0004a01-47f0-4f3d-bc3a-3016f1d7b678" alt="Screenshot 2" width="150"/>
+  <img src="https://github.com/user-attachments/assets/7dc4d4da-d57e-4558-93fd-3f55c2b1a1ff" alt="Screenshot 3" width="150"/>
+  <img src="https://github.com/user-attachments/assets/cdf6d383-d55a-42e7-88c8-e1377a0c413f" alt="Screenshot 4" width="150"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/50162b70-5e07-48cc-8c4d-1d8595d544b4" alt="Screenshot 5" width="150"/>
+  <img src="https://github.com/user-attachments/assets/dbd8d31d-076d-4cb0-b74a-4c6d439988bd" alt="Screenshot 6" width="150"/>
+  <img src="https://github.com/user-attachments/assets/380c5b0e-1f1b-428d-ab99-6265d6e7b267" alt="Screenshot 7" width="150"/>
+</p>
