@@ -1,6 +1,8 @@
 # My App
 
 ## Screenshots
+## Play Store Link :
+https://play.google.com/store/apps/details?id=com.devgenix.bhajanarti
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/3751b07b-3b73-41a3-97e3-87b1bc28b065" alt="Screenshot 1" width="150"/>
