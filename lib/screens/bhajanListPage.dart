@@ -1,221 +1,327 @@
-import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_state.dart';
+import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_bloc.dart';
+import 'package:bhajan_arti/bloc/bhajanList/bhjan_list_events.dart';
+import 'package:bhajan_arti/pages/favorite_page.dart';
+import 'package:bhajan_arti/pages/quotes_page.dart';
+import 'package:bhajan_arti/screens/bhajan_title_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 
-import '../bloc/bhajanList/bhjan_list_bloc.dart';
-import 'bhajan_title_page.dart';
+import '../pages/wallpaper_page.dart';
 
-class BhajanListPage extends StatelessWidget {
+class BhajanListPage extends StatefulWidget {
   BhajanListPage({Key? key});
 
-  final BhajanListBloc _bhajanListBloc = BhajanListBloc();
-  final String Aarti = dotenv.env['Aarti_API']!;
-  final String Chalisa = dotenv.env['Chalisa']!;
-  final String Ram = dotenv.env['Ram']!;
-  final String Ma = dotenv.env['Ma']!;
-  final String Ganesh = dotenv.env['Ganesh']!;
-  final String khatuShyam = dotenv.env['khatuShyam']!;
-  final String Laxmi = dotenv.env['Laxmi']!;
-  final String Hanumanji = dotenv.env['Hanumanji']!;
+  @override
+  _BhajanListPageState createState() => _BhajanListPageState();
+}
+
+class _BhajanListPageState extends State<BhajanListPage> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _pages = <Widget>[
+    BhajanListContent(),
+    WallpaperPage(),
+    GodQuotesPage(),
+    FavoritePage(),
+  ];
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _bhajanListBloc,
-      child: BlocConsumer<BhajanListBloc, BhajanListState>(
-        listener: (context, state) {
-          if (state is BhajanListLoaded) {
-            navigateToBhajanTitlePage(context, state.data);
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: const Color(0xFFEFF3F6), // Light Blue Grey
-            appBar: AppBar(
-              title: const Text(
-                'BhajanAarti',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _preloadImages();
+  }
+
+  void _preloadImages() {
+    final List<String> imagePaths = [
+      'lib/assets/images/god_images/arti_image.jpg',
+      'lib/assets/images/god_images/chalisa_image.jpg',
+      'lib/assets/images/god_images/sreeram_image.jpg',
+      'lib/assets/images/god_images/mata_image.jpg',
+      'lib/assets/images/god_images/ganesh_image.jpg',
+      'lib/assets/images/god_images/krishna_image.jpg',
+      'lib/assets/images/god_images/laxmi_image.jpg',
+      'lib/assets/images/god_images/hanumanji_image.jpg',
+    ];
+
+    for (String path in imagePaths) {
+      precacheImage(AssetImage(path), context);
+    }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _handleMenuAction(String result) {
+    switch (result) {
+      case 'Share':
+        _shareApp();
+        break;
+      case 'Copyright':
+        _showCopyrightDialog();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _shareApp() {
+  final RenderBox box = context.findRenderObject() as RenderBox;
+  Share.share(
+    'Check out the BhajanAarti app for amazing bhajans and aartis! Download now: https://play.google.com/store/apps/details?id=com.devgenix.bhajanarti',
+    subject: 'BhajanAarti App',
+    sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+  );
+}
+
+
+  void _showCopyrightDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Copyright Information'),
+          content: Text(
+            'All content in this app is used with permission. If you believe any content is used without permission, please contact us at aannkkiitt321@gmail.com.',
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            drawer: Drawer(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: Container(
-                color: const Color(0xFFEFF3F6), // Light Blue Grey
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    const DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Menu',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Welcome!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.favorite, color: Colors.blue),
-                      title: const Text('Favorite'),
-                      onTap: () {
-                        // Navigate to Favorite page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.info, color: Colors.blue),
-                      title: const Text('About'),
-                      onTap: () {
-                        // Navigate to About page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.help, color: Colors.blue),
-                      title: const Text('FAQ'),
-                      onTap: () {
-                        // Navigate to FAQ page
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.share, color: Colors.blue),
-                      title: const Text('Share'),
-                      onTap: () {
-                        // Perform Share action
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(children: [
-                    RoomCard(
-                      title: "Aarti",
-                      subtitle: "आरती",
-                      imagePath: "lib/assets/images/god_images/arti_image.jpg",
-                      onTap: () => _bhajanListBloc.add(FetchBhajans(Aarti)),
-                    ),
-                    RoomCard(
-                      title: "Chalisa",
-                      subtitle: "चालीसा",
-                      imagePath:
-                          "lib/assets/images/god_images/chalisa_image.jpg",
-                      onTap: () => _bhajanListBloc.add(FetchBhajans(Chalisa)),
-                    ),
-                  ]),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Sree Ram Bhajan",
-                        subtitle: "श्री राम भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/sreeram_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ram)),
-                      ),
-                      RoomCard(
-                        title: "Devimaa Bhajan",
-                        subtitle: "देवीमाँ भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/mata_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ma)),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Ganesh Bhajan",
-                        subtitle: "गणेश भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/ganesh_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Ganesh)),
-                      ),
-                      RoomCard(
-                        title: "Khatu Shyam Bhajan",
-                        subtitle: "खाटू श्याम भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/krishna_image.jpg",
-                        onTap: () =>
-                            _bhajanListBloc.add(FetchBhajans(khatuShyam)),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      RoomCard(
-                        title: "Laxmi Bhajan",
-                        subtitle: "लक्ष्मी भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/laxmi_image.jpg",
-                        onTap: () => _bhajanListBloc.add(FetchBhajans(Laxmi)),
-                      ),
-                      RoomCard(
-                        title: "Hanumanji Bhajan",
-                        subtitle: "हनुमानजी भजन",
-                        imagePath:
-                            "lib/assets/images/god_images/hanumanji_image.jpg",
-                        onTap: () =>
-                            _bhajanListBloc.add(FetchBhajans(Hanumanji)),
-                      ),
-                    ],
-                  ),
-                ],
-                // Add other RoomRows with respective RoomCards here
-              ),
-            ),
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 
-  void navigateToBhajanTitlePage(BuildContext context, List<dynamic> data) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BhajanTitlePage(data: data),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor:
+          const Color.fromARGB(255, 245, 244, 244), // Light Blue Grey
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundImage: AssetImage(
+                'lib/assets/images/cover.png'), // Replace with your image path
+          ),
+        ),
+        title: const Text(
+          'BhajanAarti',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert, color: Colors.black),
+              onSelected: _handleMenuAction,
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'Share',
+                  child: Text('Share App'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Copyright',
+                  child: Text('Copyright'),
+                ),
+              ],
+            ),
+          ),
+        ],
+        backgroundColor: Colors.orange[400],
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 10,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.wallpaper),
+            label: 'Wallpaper',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_quote),
+            label: 'God Quotes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.black,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
 }
 
-class RoomRow extends StatelessWidget {
-  final List<Widget> children;
+class BhajanListContent extends StatelessWidget {
+  final List<String> apiEndpoints = [
+    dotenv.env['Aarti_API']!,
+    dotenv.env['Chalisa']!,
+    dotenv.env['Ram']!,
+    dotenv.env['Ma']!,
+    dotenv.env['Ganesh']!,
+    dotenv.env['khatuShyam']!,
+    dotenv.env['Laxmi']!,
+    dotenv.env['Hanumanji']!,
+  ];
 
-  const RoomRow({Key? key, required this.children});
+  final List<String> youtubeApiEndpoints = [
+    dotenv.env['Youtube_Api_1']!,
+    dotenv.env['Youtube_Api_2']!,
+    dotenv.env['Youtube_Api_3']!,
+    dotenv.env['Youtube_Api_4']!,
+    dotenv.env['Youtube_Api_5']!,
+    dotenv.env['Youtube_Api_6']!,
+    dotenv.env['Youtube_Api_7']!,
+    dotenv.env['Youtube_Api_8']!,
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: children,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(children: [
+            RoomCard(
+              title: "Aarti",
+              subtitle: "आरती",
+              imagePath: "lib/assets/images/god_images/arti_image.jpg",
+              onTap: () {
+                _navigateToBhajanTitlePage(
+                    context, apiEndpoints[0], youtubeApiEndpoints[0],
+                    title: "आरती");
+              },
+            ),
+            RoomCard(
+              title: "Chalisa",
+              subtitle: "चालीसा",
+              imagePath: "lib/assets/images/god_images/chalisa_image.jpg",
+              onTap: () {
+                _navigateToBhajanTitlePage(
+                    context, apiEndpoints[1], youtubeApiEndpoints[1],
+                    title: "चालीसा");
+              },
+            ),
+          ]),
+          Row(
+            children: [
+              RoomCard(
+                title: "Sree Ram Bhajan",
+                subtitle: "श्री राम भजन",
+                imagePath: "lib/assets/images/god_images/sreeram_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[2], youtubeApiEndpoints[2],
+                      title: "श्री राम भजन");
+                },
+              ),
+              RoomCard(
+                title: "Devimaa Bhajan",
+                subtitle: "देवीमाँ भजन",
+                imagePath: "lib/assets/images/god_images/mata_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[3], youtubeApiEndpoints[3],
+                      title: "देवीमाँ भजन");
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              RoomCard(
+                title: "Ganesh Bhajan",
+                subtitle: "गणेश भजन",
+                imagePath: "lib/assets/images/god_images/ganesh_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[4], youtubeApiEndpoints[4],
+                      title: "गणेश भजन");
+                },
+              ),
+              RoomCard(
+                title: "Khatu Shyam Bhajan",
+                subtitle: "खाटू श्याम भजन",
+                imagePath: "lib/assets/images/god_images/krishna_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[5], youtubeApiEndpoints[5],
+                      title: "खाटू श्याम भजन");
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              RoomCard(
+                title: "Laxmi Bhajan",
+                subtitle: "लक्ष्मी भजन",
+                imagePath: "lib/assets/images/god_images/laxmi_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[6], youtubeApiEndpoints[6],
+                      title: "लक्ष्मी भजन");
+                },
+              ),
+              RoomCard(
+                title: "Hanumanji Bhajan",
+                subtitle: "हनुमानजी भजन",
+                imagePath: "lib/assets/images/god_images/hanumanji_image.jpg",
+                onTap: () {
+                  _navigateToBhajanTitlePage(
+                      context, apiEndpoints[7], youtubeApiEndpoints[7],
+                      title: "हनुमानजी भजन");
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToBhajanTitlePage(
+      BuildContext context, String apiEndpoint, String youtubeApiEndpoint,
+      {required String title}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BhajanTitlePage(
+          title: title,
+          apiUrl: apiEndpoint,
+          youtubePlaylistUrl: youtubeApiEndpoint,
+        ),
+      ),
     );
   }
 }
@@ -231,8 +337,7 @@ class RoomCard extends StatelessWidget {
     required this.subtitle,
     required this.imagePath,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

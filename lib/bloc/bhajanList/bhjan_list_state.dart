@@ -1,21 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-abstract class BhajanListEvent extends Equatable {
-  const BhajanListEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class FetchBhajans extends BhajanListEvent {
-  final String apiUrl;
-
-  const FetchBhajans(this.apiUrl);
-
-  @override
-  List<Object> get props => [apiUrl];
-}
-
 abstract class BhajanListState extends Equatable {
   const BhajanListState();
 
@@ -29,11 +13,12 @@ class BhajanListLoading extends BhajanListState {}
 
 class BhajanListLoaded extends BhajanListState {
   final List<dynamic> data;
+  final List<Map<String, dynamic>> favorites;
 
-  const BhajanListLoaded(this.data);
+  const BhajanListLoaded(this.data, {required this.favorites});
 
   @override
-  List<Object> get props => [data];
+  List<Object> get props => [data, favorites];
 }
 
 class BhajanListError extends BhajanListState {

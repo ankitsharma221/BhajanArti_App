@@ -1,4 +1,4 @@
-import 'package:bhajan_arti/screens/language_selection.dart';
+import 'package:bhajan_arti/screens/bhajanListPage.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
     _controller.forward().then((value) => Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LanguageSelectionScreen())));
+        MaterialPageRoute(builder: (context) => BhajanListPage())));
   }
 
   @override

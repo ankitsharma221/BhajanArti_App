@@ -1,4 +1,4 @@
-package com.example.bhajan_arti
+package com.devgenix.bhajanarti
 
 import io.flutter.embedding.android.FlutterActivity
 
