@@ -4,7 +4,7 @@ abstract class BhajanListState extends Equatable {
   const BhajanListState();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class BhajanListInitial extends BhajanListState {}
@@ -13,19 +13,19 @@ class BhajanListLoading extends BhajanListState {}
 
 class BhajanListLoaded extends BhajanListState {
   final List<dynamic> data;
-  final List<String> favorites; // Add favorites list
+  final List<Map<String, dynamic>> favorites;
 
-  BhajanListLoaded(this.data, {required this.favorites});
+  const BhajanListLoaded(this.data, {required this.favorites});
 
   @override
-  List<Object?> get props => [data, favorites];
+  List<Object> get props => [data, favorites];
 }
 
 class BhajanListError extends BhajanListState {
-  final String errorMessage;
+  final String message;
 
-  BhajanListError(this.errorMessage);
+  const BhajanListError(this.message);
 
   @override
-  List<Object?> get props => [errorMessage];
+  List<Object> get props => [message];
 }
