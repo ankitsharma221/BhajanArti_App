@@ -58,7 +58,7 @@ class _WallpaperPageState extends State<WallpaperPage>
     try {
       final response = await http
           .get(Uri.parse(
-              'https://bhajanapi.vercel.app/wallpapers?page=$page&limit=$limit'))
+              'Wallpaper_API'))
           .timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
