@@ -104,7 +104,6 @@ class _FavoritePageState extends State<FavoritePage> {
                 bhajan['lyrics'].cast<String>(),
               ),
             );
-            // Immediately remove the item from the local list
             setState(() {
               localFavorites.removeAt(index);
             });
