@@ -58,7 +58,7 @@ class _GodQuotesPageState extends State<GodQuotesPage>
     try {
       final response = await http
           .get(Uri.parse(
-              'https://bhajanapi.vercel.app/god-quotes?page=$page&limit=$limit'))
+              'Quotes_page_API'))
           .timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
